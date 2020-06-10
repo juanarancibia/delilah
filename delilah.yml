@@ -1,0 +1,149 @@
+---
+info:
+  name: Delilah
+  description: |
+    # Introduccion
+    Esta API permite el manejo de productos, pedidos y usuarios de el resto Delilah
+
+    # Authentication
+    Al loguearse correctamente, la api devolvera un token que se deberá enviar en todos los requests dentro de los headers en la parte de  Authorization, asignandole un string de la forma: "Bearer {token}"
+item:
+- name: SignUp
+  request:
+    method: POST
+    header: []
+    body:
+      mode: json
+      json: usuario, contrasena, email, tel, dir, rol(1:Admin, 2:Cliente), nom
+    url:
+      raw: "/signup"
+      path:
+      - signup
+    description: 'Registrar un nuevo usuario '
+- name: LogIn
+  request:
+    method: POST
+    header: []
+    body:
+      mode: json
+      json: usuario, contrasena
+    url:
+      raw: "/login"
+      path:
+      - login
+    description: Ingresar al sistema con usuario y contraseña. Devuelve un token que
+      se utilizara en otros endpoints
+  response:
+  - body: "{token}"
+- name: Get productos
+  request:
+    method: GET
+    header: []
+    body:
+      mode: json
+      json: ''
+    url:
+      raw: "/productos"
+      path:
+      - productos
+    description: Devuelve los productos existentes en el sistema. Cualquier usuario
+      puede realizar esta accion
+- name: Post Producto
+  request:
+    method: POST
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: nombre, descripcion, precio
+    url:
+      raw: "/productos"
+      path:
+      - productos
+    description: Cargar un nuevo producto al sistema. Solo administradores pueden
+      realizar esta accion
+- name: Put Productos
+  request:
+    method: PUT
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: id, nombre, descripcion, precio
+    url:
+      raw: "/productos"
+      path:
+      - productos
+    description: Modificar los datos de un producto, identificandolo por su id. Solo
+      administradores pueden realizar esta accion
+- name: Delete productos
+  request:
+    method: DELETE
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: id
+    url:
+      raw: "/productos"
+      path:
+      - productos
+    description: 'Elimina un producto, identificandolo porr su id. Solo administrador
+      pueden realizar esta accion '
+- name: Get All pedidos
+  request:
+    method: GET
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: ''
+    url:
+      raw: "/pedidos-all"
+      path:
+      - pedidos-all
+    description: Devuelve todos los pedidos existentes en el sistema. Solo administradores
+      pueden realizar esta accion
+- name: Get pedidos usuario
+  request:
+    method: GET
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: raw
+      raw: ''
+    url:
+      raw: "/pedidos"
+      path:
+      - pedidos
+    description: Devuelve los pedidos de el usuario logueado. Cualquier usuario logueado
+      puede realizar esta accion.
+- name: Post pedido
+  request:
+    method: POST
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: formaPago, productos [{ id, cantidad, precio}]
+    url:
+      raw: "/pedidos"
+      path:
+      - pedidos
+    description: Cargar un nuevo pedidos al sistema. Cualquier usuario logueado puede
+      realizar esta accion
+- name: Put pedido
+  request:
+    method: PUT
+    header:
+    - 'Authorization: Bearer {token}'
+    body:
+      mode: json
+      json: idPedido, idEstado(3:Nuevo, 4:Confirmado, 5:Preparando, 6:Enviando, 7:Cancelado,
+        8:Entregado), descripcion
+    url:
+      raw: "/pedidos"
+      path:
+      - pedidos
+    description: Actualiza el estado de un pedido. Solo administradores pueden realizar
+      esta accion
