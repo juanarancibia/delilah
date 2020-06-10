@@ -1,4 +1,4 @@
-# delilah
+# Delilah
 
 Para inicializar el proyecto en su entorno local deberá en primera instancia instalar los paquetes incluidos en el package.json para el correcto funcionamiento del proyecto.
 
