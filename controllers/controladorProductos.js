@@ -1,7 +1,9 @@
+const config = require("../config");
 const Sequlieze = require("sequelize");
-const sequelize = new Sequlieze(
-  "mysql://RocQd9YU1i:pbnPd2JL7Y@remotemysql.com/RocQd9YU1i"
-);
+const sequelize = new Sequlieze(config.dbName, config.dbUser, config.dbPwd, {
+  host: config.dbPort,
+  dialect: config.dbDialect
+});
 const Producto = sequelize.import("../models/Producto");
 
 var getProductos = function (req, res) {

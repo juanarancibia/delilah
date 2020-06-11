@@ -25,7 +25,7 @@ module.exports = function (app) {
   app.post("/login", controllerUsr.logIn);
 
   app.get(
-    "/pedidos-all",
+    "/pedidosAll",
     validators.validarAdministrador,
     controllerPedidos.getPedidos
   );
@@ -36,4 +36,5 @@ module.exports = function (app) {
     validators.validarAdministrador,
     controllerPedidos.updateEstado
   );
+  app.delete("/pedidos", validators.validarAdministrador, controllerPedidos.deletePedido);
 };

@@ -1,7 +1,9 @@
+const config = require("../config");
 const Sequlieze = require("sequelize");
-const sequelize = new Sequlieze(
-  "mysql://RocQd9YU1i:pbnPd2JL7Y@remotemysql.com/RocQd9YU1i"
-);
+const sequelize = new Sequlieze(config.dbName, config.dbUser, config.dbPwd, {
+  host: config.dbPort,
+  dialect: config.dbDialect
+});
 const Pedido = sequelize.import("../models/Pedido");
 const EstXPed = sequelize.import("../models/EstadosXPedido");
 const Detalle = sequelize.import("../models/DetallePedido");
@@ -78,7 +80,7 @@ var getPedidosUsuario = function (req, res) {
     ],
   }).then((resultado) => {
     res.json(resultado);
-  }).catch(err => res.json(err));
+  }).catch(err => res.status(403).json(err));
 };
 
 var setPedido = function (req, res) {
@@ -107,8 +109,7 @@ var setPedido = function (req, res) {
       res.json(nuevo);
     })
     .catch((err) => {
-      console.log(err);
-      res.json(err);
+      res.status(403).json(err);
     });
 };
 
@@ -150,9 +151,24 @@ var updateEstado = function (req, res) {
     });
 };
 
+function deletePedido(req, res) {
+  const { idPedido } = req.body;
+  Detalle.destroy({
+    where: { idPedido: idPedido }
+  }).then(() => {
+    Pedido.destroy({
+      where: {
+        idPedido: idPedido
+      }
+    })
+  }).then(resultado => res.json(resultado)).catch(err => res.status(403).json(err));
+}
+
+
 module.exports = {
   setPedido: setPedido,
   getPedidosUsuario: getPedidosUsuario,
   getPedidos: getPedidos,
   updateEstado: updateEstado,
+  deletePedido: deletePedido
 };

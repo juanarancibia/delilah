@@ -1,0 +1,296 @@
+openapi: 3.0.0
+info:
+  description: >-
+    Esta API permite el manejo de productos, pedidos y usuarios de el resto
+    Delilah
+  version: "1.0.0"
+  title: Delilah
+tags:
+  - name: productos
+    description: Manejo de productos
+  - name: pedidos
+    description: Manejo de pedidos
+  - name: usuarios
+    description: Manejo de usuarios
+
+paths:
+  /productos:
+    get:
+      tags:
+        - productos
+      summary: Devuelve los productos
+      responses:
+        '200':
+          description: Productos devueltos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+        '404':
+          description: No hay productos
+    post:
+      tags:
+        - productos
+      summary: Cargar un nuevo producto
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: query
+          name: nombre
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: descripcion
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: precio
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Se cargo correctamente
+        '403':
+          description: Error
+    put:
+      tags:
+        - productos
+      summary: Modificar un producto
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: nombre
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: descripcion
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: precio
+          required: false
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: Modifico correctamente
+        '403':
+          description: Error
+    delete:
+      tags:
+        - productos
+      summary:  Eliminar producto
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: query
+          name: id  
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Elimino correctamente
+        '403':
+          description: Error
+  
+  /pedidos:
+    get:
+      tags:
+        - pedidos
+      summary: Devuelve los pedidos de un usuario
+      security: 
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Pedidos devueltos
+        '403':
+          description: Error
+    post:
+      tags:
+        - pedidos
+      summary: Cargar un nuevo pedido
+      security: 
+      - BearerAuth: []
+      parameters: 
+        - in: query
+          name: formaPago
+          required: true
+          schema: 
+            type: integer
+        - in: query
+          name: productos
+          required: true
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id: 
+                  type: integer
+                cantidad:
+                  type: integer
+                precio:
+                  type: integer
+      responses:
+        '200':
+          description: Se cargo correctamente
+        '403':
+          description: Error
+    put:
+      tags:
+        - pedidos
+      summary: Modificar estado de un pedido
+      security: 
+      - BearerAuth: []
+      parameters:
+        - in: query
+          name: idPedido
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: idEstado
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: descripcion
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Modifico correctamente
+        '404':
+          description: No se encontro el pedido
+    delete: 
+      tags: 
+        - pedidos
+      summary: Eliminar un pedido
+      security: 
+      - BearerAuth: []
+      parameters: 
+        - in: query
+          name: idPedido
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Elimino correctamente
+        '403':
+          description: Error
+          
+  /pedidosAll:
+    get:
+      tags:
+        - pedidos
+      summary: Devuelve todos los pedidos
+      security: 
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Pedidos devueltos
+        '403':
+          description: Error
+          
+  /signup:
+    post:
+      tags: 
+        - usuarios
+      summary: Registrar un nuevo usuario
+      parameters: 
+        - in: query
+          name: usuario
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: contrasena
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: dir
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: tel
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: nom
+          required: true
+          schema:
+            type: string    
+      responses:
+        '200':
+          description: Registro correctamente
+        '403':
+          description: Error
+          
+  /login:
+    post:
+      tags:
+        - usuarios
+      summary: Ingresar al sistema
+      parameters: 
+        - in: query
+          name: usuario
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: contrasena
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Logueo correcto
+        '401':
+          description: Usuario o contraseña erroneos
+  
+components:
+  schemas:
+    Producto:
+      required:
+        - nombre
+        - descripcion
+        - precio
+      properties:
+        idProducto:
+          type: integer
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        precio:
+          type: integer
+    
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    
